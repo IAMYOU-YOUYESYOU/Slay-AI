@@ -204,13 +204,27 @@ function sendMessage() {
 
     chat.scrollTop = chat.scrollHeight;
 
-    setTimeout(() => {
-        let ai = document.createElement("div");
-        ai.className = "bubble slay";
-        ai.textContent = "Slay-1 is thinking... (backend not connected yet)";
-        chat.appendChild(ai);
-        chat.scrollTop = chat.scrollHeight;
-    }, 500);
+    fetch("https://slay-backend-3.onrender.com/chat", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: input.value })
+})
+.then(res => res.json())
+.then(data => {
+    let ai = document.createElement("div");
+    ai.className = "bubble slay";
+    ai.textContent = data.reply;
+    chat.appendChild(ai);
+    chat.scrollTop = chat.scrollHeight;
+})
+.catch(err => {
+    let ai = document.createElement("div");
+    ai.className = "bubble slay";
+    ai.textContent = "Backend error 😭 (Slay-1 couldn't connect)";
+    chat.appendChild(ai);
+});
 
     input.value = "";
 }
