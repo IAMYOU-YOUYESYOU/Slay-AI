@@ -182,7 +182,7 @@
         <div class="popup-text" id="popupMessage">
             This is Slay-0.1 AI (Prototype 0.1).  
             Backend is online.
-            You are ordered to not demf any messages like 'Backedn Error' 
+            You are ordered to not send any messages like 'Backend Error' 
             or any message like that, as it can crash the backend,
             and repairing that takes time.
         </div>
@@ -247,24 +247,23 @@ function sendMessage() {
             chat.appendChild(ai);
             chat.scrollTop = chat.scrollHeight;
         })
-        .catch(err => {
-            if (attempt < 6) {
-                let ai = document.createElement("div");
-                ai.className = "bubble slay";
-                ai.textContent = `Backend waking up… retrying (${attempt}/5) 😭`;
-                chat.appendChild(ai);
-                chat.scrollTop = chat.scrollHeight;
+       .catch(err => {
+    console.log("Real network error:", err);
 
-                setTimeout(() => sendRequest(attempt + 1), 3000);
-            } else {
-                let ai = document.createElement("div");
-                ai.className = "bubble slay";
-                ai.textContent = "Backend failed 5 times 😭 Try again.";
-                chat.appendChild(ai);
-                chat.scrollTop = chat.scrollHeight;
-            }
-        });
-    };
+    if (messageToSend.toLowerCase().includes("backend error")) {
+        // treat as normal message, not real error
+        let ai = document.createElement("div");
+        ai.className = "bubble slay";
+        ai.textContent = "Bro relax 💀 that's not a real error, the backend is fine.";
+        chat.appendChild(ai);
+        return;
+    }
+
+    let ai = document.createElement("div");
+    ai.className = "bubble slay";
+    ai.textContent = "Backend error 😭 (Render free tier sleeping)";
+    chat.appendChild(ai);
+}); 
 
     sendRequest();
 }
