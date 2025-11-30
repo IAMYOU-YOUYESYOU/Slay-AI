@@ -262,6 +262,14 @@ function sendMessage() {
     sendRequest();
 }
 </script>
+<script>
+// CLOSE POPUP FUNCTION
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
 
+// BIND BUTTON CLICK
+document.getElementById("continueBtn").addEventListener("click", closePopup);
+</script>
 </body>
 </html>
