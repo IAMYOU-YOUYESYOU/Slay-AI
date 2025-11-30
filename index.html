@@ -245,20 +245,19 @@ function sendRequest(attempt = 1) {
         chat.scrollTop = chat.scrollHeight;
     })
     .catch(err => {
-        if (attempt < 3) {
-            // retry after 800ms
-            setTimeout(() => sendRequest(attempt + 1), 800);
+        if (attempt < 20) {  
+            // retry for ~40 seconds  
+            setTimeout(() => sendRequest(attempt + 1), 2000);
         } else {
             let ai = document.createElement("div");
             ai.className = "bubble slay";
-            ai.textContent = "Backend error 😭 (Render free tier sleeping)";
+            ai.textContent = "Backend waking up… try again in a few seconds 😭";
             chat.appendChild(ai);
         }
     });
 }
 
 sendRequest();
-
     input.value = "";
 }
 </script>
