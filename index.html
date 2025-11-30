@@ -181,7 +181,7 @@
 
         <div class="popup-text" id="popupMessage">
             This is Slay-1 AI (Prototype 0.1).  
-            Backend is currently online.
+            Backend is online.
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -204,6 +204,7 @@
 </div>
 
 <script>
+
 function closePopup() {
     document.getElementById("popup").style.display = "none";
 }
@@ -224,7 +225,9 @@ function sendMessage() {
 
     input.value = "";
 
+    // REQUEST FUNCTION
     const sendRequest = (attempt = 1) => {
+
         fetch("https://slay-backend-3.onrender.com/chat", {
             method: "POST",
             headers: {
@@ -232,6 +235,7 @@ function sendMessage() {
             },
             body: JSON.stringify({ message })
         })
+
         .then(res => res.json())
         .then(data => {
             let ai = document.createElement("div");
@@ -240,26 +244,30 @@ function sendMessage() {
             chat.appendChild(ai);
             chat.scrollTop = chat.scrollHeight;
         })
-       .catch(err => {
-    console.log("Real network error:", err);
 
-    if (messageToSend.toLowerCase().includes("backend error")) {
-        // treat as normal message, not real error
-        let ai = document.createElement("div");
-        ai.className = "bubble slay";
-        ai.textContent = "Bro relax 💀 that's not a real error, the backend is fine.";
-        chat.appendChild(ai);
-        return;
-    }
+        .catch(err => {
+            console.log("Network error:", err);
 
-    let ai = document.createElement("div");
-    ai.className = "bubble slay";
-    ai.textContent = "Backend error 😭 (Render free tier sleeping)";
-    chat.appendChild(ai);
-}); 
+            // Prevent infinite loop when user sends "backend error"
+            if (message.toLowerCase().includes("backend error")) {
+                let ai = document.createElement("div");
+                ai.className = "bubble slay";
+                ai.textContent = "Bro relax 💀 that's not a real backend issue.";
+                chat.appendChild(ai);
+                return;
+            }
+
+            let ai = document.createElement("div");
+            ai.className = "bubble slay";
+            ai.textContent = "Backend error 😭 (Render free tier sleeping)";
+            chat.appendChild(ai);
+        });
+
+    }; // END sendRequest
 
     sendRequest();
-}
+} // END sendMessage
+
 </script>
 
 <script>
