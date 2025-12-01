@@ -181,7 +181,7 @@
 
         <div class="popup-text" id="popupMessage">
             This is Slay-1 AI (Prototype 0.1).  
-            Maintenance is ongoing
+            Maintenance is done
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -259,38 +259,40 @@ function sendMessage() {
             chat.scrollTop = chat.scrollHeight;
         })
 
-        .catch(err => {
+ .catch(err => {
+    console.log("Network error:", err);
 
-            console.log("Fetch error:", err);
+    // Prevent loop if user writes "backend error"
+    if (message.toLowerCase().includes("backend error")) {
+        let ai = document.createElement("div");
+        ai.className = "bubble slay";
+        ai.textContent = "Chill bro 💀 that's not a real backend issue.";
+        chat.appendChild(ai);
+        return;
+    }
 
-            // Special case: prevent backend error loop
-            if (message.toLowerCase().includes("backend error")) {
-                let ai = document.createElement("div");
-                ai.className = "bubble slay";
-                ai.textContent = "Bro chill 😭 that's not a real backend issue.";
-                chat.appendChild(ai);
-                return;
-            }
+    // Only retry if backend really fails
+    if (attempt < 3) {
+        setTimeout(() => {
 
-            // Retry only 2 times
-            if (attempt < 3) {
-                let ai = document.createElement("div");
-                ai.className = "bubble slay";
-                ai.textContent = `Backend sleeping 😴 retrying (${attempt}/2)...`;
-                chat.appendChild(ai);
-
-                // Wait longer each retry (backoff)
-                setTimeout(() => sendRequest(attempt + 1), attempt * 2500);
-                return;
-            }
-
-            // After retries fail
             let ai = document.createElement("div");
             ai.className = "bubble slay";
-            ai.textContent = "Backend error 😭 (Groq rate-limited us)";
+            ai.textContent = `Backend sleeping 😴 retrying (${attempt}/2)...`;
             chat.appendChild(ai);
-        });
-    };
+            chat.scrollTop = chat.scrollHeight;
+
+            sendRequest(attempt + 1);
+
+        }, 800); // wait 0.8 sec before retry
+        return;
+    }
+
+    // Final fail message
+    let ai = document.createElement("div");
+    ai.className = "bubble slay";
+    ai.textContent = "Backend failed 😭 Try again later";
+    chat.appendChild(ai);
+});
 
     sendRequest();
 }
