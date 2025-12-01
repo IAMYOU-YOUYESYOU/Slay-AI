@@ -181,7 +181,7 @@
 
         <div class="popup-text" id="popupMessage">
             This is Slay-1 AI (Prototype 0.1).  
-            Maintenance is done
+            Testing is ongoing
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -204,32 +204,18 @@
 </div>
 
 <script>
-
 function closePopup() {
     document.getElementById("popup").style.display = "none";
 }
 
-// Global cooldown flag
-let slayCooldown = false;
-
 function sendMessage() {
-
-    // Block spam messages
-    if (slayCooldown) {
-        alert("Boss chill 😭 Slay needs 1 second cooldown.");
-        return;
-    }
-
-    slayCooldown = true;
-    setTimeout(() => slayCooldown = false, 1200); // 1.2 second cooldown
-
     const input = document.getElementById("userInput");
     const chat = document.getElementById("chat-box");
     const message = input.value.trim();
 
     if (message === "") return;
 
-    // user bubble
+    // User bubble
     let userBubble = document.createElement("div");
     userBubble.className = "bubble user";
     userBubble.textContent = message;
@@ -238,7 +224,9 @@ function sendMessage() {
 
     input.value = "";
 
-    // REQUEST FUNCTION WITH RETRIES
+    // --------------------
+    // SEND REQUEST FUNCTION
+    // --------------------
     const sendRequest = (attempt = 1) => {
 
         fetch("https://slay-backend-3.onrender.com/chat", {
@@ -251,7 +239,6 @@ function sendMessage() {
 
         .then(res => res.json())
         .then(data => {
-
             let ai = document.createElement("div");
             ai.className = "bubble slay";
             ai.textContent = data.reply;
@@ -259,46 +246,42 @@ function sendMessage() {
             chat.scrollTop = chat.scrollHeight;
         })
 
- .catch(err => {
-    console.log("Network error:", err);
+        .catch(err => {
+            console.log("Network error:", err);
 
-    // Prevent loop if user writes "backend error"
-    if (message.toLowerCase().includes("backend error")) {
-        let ai = document.createElement("div");
-        ai.className = "bubble slay";
-        ai.textContent = "Chill bro 💀 that's not a real backend issue.";
-        chat.appendChild(ai);
-        return;
-    }
+            // If user writes "backend error", don't loop
+            if (message.toLowerCase().includes("backend error")) {
+                let ai = document.createElement("div");
+                ai.className = "bubble slay";
+                ai.textContent = "Bro chill 💀 that's not even a real backend issue.";
+                chat.appendChild(ai);
+                return;
+            }
 
-    // Only retry if backend really fails
-    if (attempt < 3) {
-        setTimeout(() => {
+            // Retry ONLY if backend really failed
+            if (attempt <= 2) {
+                let retryMsg = document.createElement("div");
+                retryMsg.className = "bubble slay";
+                retryMsg.textContent = `Backend sleeping 😴 retrying (${attempt}/2)...`;
+                chat.appendChild(retryMsg);
+                chat.scrollTop = chat.scrollHeight;
 
+                setTimeout(() => sendRequest(attempt + 1), 1000);
+                return;
+            }
+
+            // Final fail message
             let ai = document.createElement("div");
             ai.className = "bubble slay";
-            ai.textContent = `Backend sleeping 😴 retrying (${attempt}/2)...`;
+            ai.textContent = "Backend failed 😭 Try again in a moment.";
             chat.appendChild(ai);
-            chat.scrollTop = chat.scrollHeight;
-
-            sendRequest(attempt + 1);
-
-        }, 800); // wait 0.8 sec before retry
-        return;
-    }
-
-    // Final fail message
-    let ai = document.createElement("div");
-    ai.className = "bubble slay";
-    ai.textContent = "Backend failed 😭 Try again later";
-    chat.appendChild(ai);
-});
+        });
+    };
 
     sendRequest();
 }
-
 </script>
-
+    
 <script>
 // CLOSE POPUP FUNCTION
 function closePopup() {
