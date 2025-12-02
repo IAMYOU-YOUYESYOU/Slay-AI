@@ -247,38 +247,29 @@ function sendMessage() {
         })
 
         .catch(err => {
-            console.log("Network error:", err);
+    console.log("Network issue:", err);
 
-            // If user writes "backend error", don't loop
-            if (message.toLowerCase().includes("backend error")) {
-                let ai = document.createElement("div");
-                ai.className = "bubble slay";
-                ai.textContent = "Bro chill 💀 that's not even a real backend issue.";
-                chat.appendChild(ai);
-                return;
-            }
+    // ONLY retry if backend is REALLY offline
+    if (attempt < 2) {
+        let ai = document.createElement("div");
+        ai.className = "bubble slay";
+        ai.textContent = `Backend waking up 😴 retrying (${attempt}/2)...`;
+        chat.appendChild(ai);
 
-            // Retry ONLY if backend really failed
-            if (attempt <= 2) {
-                let retryMsg = document.createElement("div");
-                retryMsg.className = "bubble slay";
-                retryMsg.textContent = `Backend sleeping 😴 retrying (${attempt}/2)...`;
-                chat.appendChild(retryMsg);
-                chat.scrollTop = chat.scrollHeight;
+        setTimeout(() => sendRequest(attempt + 1), 1200);
+        return;
+    }
 
-                setTimeout(() => sendRequest(attempt + 1), 1000);
-                return;
-            }
+    // If both retries fail → real error
+    let ai = document.createElement("div");
+    ai.className = "bubble slay";
+    ai.textContent = "Backend failed 😭 Try again.";
+    chat.appendChild(ai);
+});
+        
+    
 
-            // Final fail message
-            let ai = document.createElement("div");
-            ai.className = "bubble slay";
-            ai.textContent = "Backend failed 😭 Try again in a moment.";
-            chat.appendChild(ai);
-        });
-    };
-
-    sendRequest();
+    sendRequest(1);
 }
 </script>
     
