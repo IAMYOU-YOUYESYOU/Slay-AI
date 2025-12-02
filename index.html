@@ -181,7 +181,7 @@
 
         <div class="popup-text" id="popupMessage">
             This is Slay-1 AI (Prototype 0.1).  
-            Testing is ongoing
+            Currently the AI is off
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -205,71 +205,78 @@
 
 <script>
 function closePopup() {
-    document.getElementById("popup").style.display = "none";
+    const popup = document.getElementById("popup");
+    if (popup) {
+        popup.style.display = "none";
+    }
 }
 
 function sendMessage() {
     const input = document.getElementById("userInput");
     const chat = document.getElementById("chat-box");
-    const message = input.value.trim();
 
+    if (!input || !chat) return;
+
+    const message = input.value.trim();
     if (message === "") return;
 
-    // User bubble
-    let userBubble = document.createElement("div");
+    // show user bubble
+    const userBubble = document.createElement("div");
     userBubble.className = "bubble user";
     userBubble.textContent = message;
     chat.appendChild(userBubble);
     chat.scrollTop = chat.scrollHeight;
 
+    // clear input
     input.value = "";
 
-    // --------------------
-    // SEND REQUEST FUNCTION
-    // --------------------
-    const sendRequest = (attempt = 1) => {
+    const lowerMsg = message.toLowerCase();
 
-        fetch("https://slay-backend-3.onrender.com/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message })
-        })
+    // send to backend
+    fetch("https://slay-backend-3.onrender.com/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(res => {
+        if (!res.ok) {
+            // e.g. 429, 500, etc.
+            throw new Error("HTTP " + res.status);
+        }
+        return res.json();
+    })
+    .then(data => {
+        const aiBubble = document.createElement("div");
+        aiBubble.className = "bubble slay";
+        aiBubble.textContent = data && data.reply
+            ? data.reply
+            : "Slay glitch ho gaya 😭 (no reply from backend)";
+        chat.appendChild(aiBubble);
+        chat.scrollTop = chat.scrollHeight;
+    })
+    .catch(err => {
+        console.log("Backend / network error:", err);
 
-        .then(res => res.json())
-        .then(data => {
-            let ai = document.createElement("div");
-            ai.className = "bubble slay";
-            ai.textContent = data.reply;
-            chat.appendChild(ai);
-            chat.scrollTop = chat.scrollHeight;
-        })
+        const aiBubble = document.createElement("div");
+        aiBubble.className = "bubble slay";
 
-        .catch(err => {
-    console.log("Network issue:", err);
+        // if user themselves typed stuff like "backend error"
+        if (
+            lowerMsg.includes("backend error") ||
+            lowerMsg.includes("server down") ||
+            lowerMsg.includes("backend failed") ||
+            lowerMsg.includes("429")
+        ) {
+            aiBubble.textContent = "Chill Boss 💀 that message was from you, not the server. Slay is fine, Groq sometimes acts moody.";
+        } else {
+            aiBubble.textContent = "Backend error 😭 — either Groq rate-limited or Render lagged. Wait a bit and try again.";
+        }
 
-    // ONLY retry if backend is REALLY offline
-    if (attempt < 2) {
-        let ai = document.createElement("div");
-        ai.className = "bubble slay";
-        ai.textContent = `Backend waking up 😴 retrying (${attempt}/2)...`;
-        chat.appendChild(ai);
-
-        setTimeout(() => sendRequest(attempt + 1), 1200);
-        return;
-    }
-
-    // If both retries fail → real error
-    let ai = document.createElement("div");
-    ai.className = "bubble slay";
-    ai.textContent = "Backend failed 😭 Try again.";
-    chat.appendChild(ai);
-});
-        
-    
-
-    sendRequest(1);
+        chat.appendChild(aiBubble);
+        chat.scrollTop = chat.scrollHeight;
+    });
 }
 </script>
     
