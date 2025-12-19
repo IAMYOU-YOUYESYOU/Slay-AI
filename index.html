@@ -254,8 +254,8 @@
         <div class="popup-title">Developer's Note</div>
 
         <div class="popup-text" id="popupMessage">
-            This is Slay-1 AI (Prototype 0.1).  
-            Currently the AI is on for a while 
+            This is Slay 0.2 ( Upgraded ).
+            U can still use 0.1
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -274,7 +274,7 @@
 </div>
 
 <div class="version-indicator">
-    Slay 0.1 → <span class="upgrade">0.2 coming soon</span>
+    Slay 0.2 → <span class="upgrade">0.3 coming soon</span>
 </div>
 
 <script>
@@ -352,6 +352,30 @@ function sendMessage() {
         chat.scrollTop = chat.scrollHeight;
     });
 }
+
+   let currentVersion = "0.1";
+
+function toggleMenu() {
+    document.getElementById("sideMenu").classList.toggle("open");
+}
+
+function setVersion(version) {
+    currentVersion = version;
+    toggleMenu();
+
+    if (version === "0.1") {
+        alert("Switched to Slay 0.1 (OG)");
+    }
+
+    if (version === "0.2") {
+        alert("Switched to Slay 0.2 🔥");
+    }
+}
+
+function openPage(page) {
+    toggleMenu();
+    alert(page + " page coming soon 👀");
+} 
 </script>
     
 <script>
