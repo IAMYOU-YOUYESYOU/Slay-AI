@@ -198,58 +198,58 @@ button{
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+window.sendMessage = function () {
+    const input = document.getElementById("userInput");
+    const chat = document.getElementById("chat-box");
+    const msg = input.value.trim();
+    if (!msg) return;
 
-    const popup = document.getElementById("popup");
-    const menuBtn = document.getElementById("menuBtn");
-    const continueBtn = document.getElementById("continueBtn");
-    const sideMenu = document.getElementById("sideMenu");
+    // USER BUBBLE
+    const u = document.createElement("div");
+    u.className = "bubble user";
+    u.textContent = msg;
+    chat.appendChild(u);
+    chat.scrollTop = chat.scrollHeight;
+    input.value = "";
 
-    // Continue button ALWAYS works
-    continueBtn.addEventListener("click", () => {
-        popup.remove();
-        menuBtn.style.display = "block";
+    // TYPING INDICATOR
+    const typing = document.createElement("div");
+    typing.className = "bubble slay";
+    typing.textContent = "Slay is typing...";
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+
+    fetch("https://slay-backend-3.onrender.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+    })
+    .then(data => {
+        setTimeout(() => {
+            typing.remove();
+
+            const a = document.createElement("div");
+            a.className = "bubble slay";
+            a.textContent = data.reply || "No reply 😭";
+            chat.appendChild(a);
+            chat.scrollTop = chat.scrollHeight;
+        }, 800); // typing delay (ms)
+    })
+    .catch(err => {
+        typing.remove();
+
+        const a = document.createElement("div");
+        a.className = "bubble slay";
+        a.textContent = "Backend error 😭 — try again later.";
+        chat.appendChild(a);
+        chat.scrollTop = chat.scrollHeight;
     });
-
-    // Menu toggle
-    window.toggleMenu = function () {
-        sideMenu.classList.toggle("open");
-    };
-
-    // Chat send
-    window.sendMessage = function () {
-        const input = document.getElementById("userInput");
-        const chat = document.getElementById("chat-box");
-        const msg = input.value.trim();
-        if (!msg) return;
-
-        const u = document.createElement("div");
-        u.className = "bubble user";
-        u.textContent = msg;
-        chat.appendChild(u);
-        input.value = "";
-
-        fetch("https://slay-backend-3.onrender.com/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg })
-        })
-        .then(r => r.json())
-        .then(d => {
-            const a = document.createElement("div");
-            a.className = "bubble slay";
-            a.textContent = d.reply || "No reply 😭";
-            chat.appendChild(a);
-        })
-        .catch(() => {
-            const a = document.createElement("div");
-            a.className = "bubble slay";
-            a.textContent = "Backend error 😭 try later";
-            chat.appendChild(a);
-        });
-    };
-
-});
+};
+</script>
 
 // BIND BUTTON CLICK
 document.getElementById("continueBtn").addEventListener("click", closePopup);
