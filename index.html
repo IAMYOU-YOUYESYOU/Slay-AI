@@ -286,11 +286,12 @@
 
 function closePopup() {
     const popup = document.getElementById("popup");
+    popup.remove(); // completely removes popup from page
+
     const menuBtn = document.getElementById("menuBtn");
-
-    popup.style.display = "none";
-
-    menuBtn.classList.remove("locked");
+    if (menuBtn) {
+        menuBtn.classList.remove("locked");
+    }
 }
 
 
