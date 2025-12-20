@@ -180,7 +180,7 @@ button{
 <div id="popup" class="popup-background">
     <div class="popup-box">
         <h2>Developer’s Note</h2>
-        <p>Maintenance going on for 0.2</p>
+        <p>Menu is under construction </p>
         <button id="continueBtn" type="button">Continue</button>
     </div>
 </div>
@@ -198,6 +198,15 @@ button{
 </div>
 
 <script>
+function closePopup() {
+    const popup = document.getElementById("popup");
+    if (popup) popup.remove();
+
+    const menuBtn = document.getElementById("menuBtn");
+    if (menuBtn) {
+        menuBtn.classList.remove("locked");
+    }
+}
 window.sendMessage = function () {
     const input = document.getElementById("userInput");
     const chat = document.getElementById("chat-box");
