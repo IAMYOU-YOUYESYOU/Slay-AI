@@ -288,10 +288,8 @@
 function closePopup() {
     document.getElementById("popup").style.display = "none";
 
-    // Enable menu after popup closes
-    const menuBtn = document.querySelector(".menu-btn");
-    menuBtn.style.pointerEvents = "auto";
-    menuBtn.style.opacity = "1";
+    const menuBtn = document.getElementById("menuBtn");
+    menuBtn.classList.remove("locked");
 }
 
 function sendMessage() {
