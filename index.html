@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slay-0.1 AI</title>
+<title>Slay-0.2 AI</title>
 
 <style>
     body {
@@ -260,8 +260,7 @@
 
         <div class="popup-text" id="popupMessage">
             This is Slay 0.2 ( Upgraded ).
-            0.1 is still available 
-            Slay is upgraded from 0.1 to 0.2 🥳🥳
+            
         </div>
 
         <button class="popup-btn" id="continueBtn">
@@ -284,12 +283,16 @@
 </div>
 
 <script>
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
 
+function closePopup() {
+    const popup = document.getElementById("popup");
     const menuBtn = document.getElementById("menuBtn");
+
+    popup.style.display = "none";
+
     menuBtn.classList.remove("locked");
 }
+
 
 function sendMessage() {
     const input = document.getElementById("userInput");
