@@ -114,7 +114,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 999;
+        z-index: 2000;
     }
 
     .popup-box {
@@ -173,12 +173,16 @@
     /* Menu button */
 .menu-btn {
     position: fixed;
-    top: 14px;
+    top: 16px;
     right: 16px;
-    font-size: 28px;
+    font-size: 26px;
     cursor: pointer;
     z-index: 1001;
-    color: white;
+}
+
+.menu-btn.locked {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 /* Side menu */
@@ -222,11 +226,6 @@
     background: #7f00ff;
 }
 
-.menu-btn.locked {
-    pointer-events: none;
-    opacity: 0.4;
-}
-}
 </style>
 </head>
 
