@@ -181,7 +181,7 @@ button{
     <div class="popup-box">
         <h2>Developer’s Note</h2>
         <p>Menu is under construction </p>
-        <button id="continueBtn" type="button">Continue</button>
+        <button onclick="closePopup()">Continue</button>
     </div>
 </div>
 
@@ -258,10 +258,7 @@ window.sendMessage = function () {
         chat.scrollTop = chat.scrollHeight;
     });
 };
-</script>
 
-// BIND BUTTON CLICK
-document.getElementById("continueBtn").addEventListener("click", closePopup);
 </script>
 <!-- Default Statcounter code for AI https://iamyou-youyesyou.github.io/Slay-AI/
 -->
