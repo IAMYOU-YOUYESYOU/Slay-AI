@@ -6,390 +6,221 @@
 <title>Slay-0.2 AI</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: #0d0d0d;
-        font-family: 'Poppins', sans-serif;
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        overflow: auto;
-    }
-
-    /* Header */
-    .header {
-        width: 100%;
-        padding: 18px 0;
-        text-align: center;
-        font-size: 26px;
-        font-weight: 700;
-        background: linear-gradient(90deg, #7f00ff, #e100ff);
-        box-shadow: 0 0 15px #9b00ff;
-    }
-
-    /* Chat box */
-    #chat-box {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    /* Chat bubbles */
-    .bubble {
-        max-width: 80%;
-        padding: 12px 16px;
-        border-radius: 16px;
-        line-height: 1.4;
-        animation: fadeIn 0.3s ease;
-    }
-
-    .user {
-        background: #7f00ff;
-        align-self: flex-end;
-        box-shadow: 0 0 8px #7f00ff;
-    }
-
-    .slay {
-        background: #1a1a1a;
-        border: 1px solid #7f00ff;
-        box-shadow: 0 0 10px #7f00ff66;
-        align-self: flex-start;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Input area */
-    .input-area {
-        display: flex;
-        padding: 10px;
-        background: #111;
-        gap: 10px;
-    }
-
-    input {
-        flex: 1;
-        padding: 14px;
-        border-radius: 12px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        background: #222;
-        color: white;
-        box-shadow: inset 0 0 8px #7f00ff44;
-    }
-
-    button {
-        padding: 14px 22px;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        border-radius: 12px;
-        background: #7f00ff;
-        color: #fff;
-        box-shadow: 0 0 10px #7f00ff;
-        cursor: pointer;
-    }
-
-    button:active {
-        transform: scale(0.96);
-    }
-
-    /* Popup Modal */
-    .popup-background {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 9999;
-    pointer-events: all;
-    }
-    }
-
-    .popup-box {
-        background: #111;
-        padding: 24px;
-        width: 80%;
-        max-width: 350px;
-        border-radius: 12px;
-        box-shadow: 0 0 12px #a200ff;
-        text-align: center;
-        border: 1px solid #7f00ff;
-        position: relative;
-        z-index: 10000;
-    }
-
-    .popup-title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        color: #e100ff;
-    }
-
-    .popup-text {
-        font-size: 15px;
-        line-height: 1.4;
-        margin-bottom: 20px;
-    }
-
-    .popup-btn {
-        padding: 10px 18px;
-        background: #7f00ff;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
-        cursor: pointer;
-        box-shadow: 0 0 10px #7f00ff;
-    }
-    /* Version Indicator */
-    .version-indicator {
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    padding: 6px 0;
-    color: #cfcfcf;
-    background: #101010;
-    border-top: 1px solid #7f00ff44;
-    box-shadow: 0 -2px 8px #7f00ff33;
-    position: relative;
-    }
-
-    .version-indicator .upgrade {
-    color: #e100ff;
-    font-weight: 600;
-    text-shadow: 0 0 6px #e100ff;
-    }
-
-    /* Menu button */
-.menu-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    font-size: 26px;
-    cursor: pointer;
-    z-index: 1001;
+body{
+    margin:0;
+    background:#0d0d0d;
+    font-family:Poppins, sans-serif;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
 }
 
-.menu-btn.locked {
-    pointer-events: none;
-    opacity: 0.4;
+/* HEADER */
+.header{
+    text-align:center;
+    padding:18px 0;
+    font-size:26px;
+    font-weight:700;
+    background:linear-gradient(90deg,#7f00ff,#e100ff);
+    box-shadow:0 0 15px #9b00ff;
 }
 
-/* Side menu */
-.side-menu {
-    position: fixed;
-    top: 0;
-    right: -260px;
-    width: 240px;
-    height: 100%;
-    background: #111;
-    box-shadow: -5px 0 15px #7f00ff66;
-    padding-top: 60px;
-    transition: 0.3s ease;
-    z-index: 1000;
+/* CHAT */
+#chat-box{
+    flex:1;
+    overflow-y:auto;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
 }
 
-.side-menu.open {
-    right: 0;
+.bubble{
+    max-width:80%;
+    padding:12px 16px;
+    border-radius:16px;
 }
 
-.menu-item {
-    padding: 16px 20px;
-    border-bottom: 1px solid #222;
-    cursor: pointer;
-    font-size: 16px;
+.user{
+    background:#7f00ff;
+    align-self:flex-end;
 }
 
-.menu-item:hover {
-    background: #1b1b1b;
+.slay{
+    background:#1a1a1a;
+    border:1px solid #7f00ff;
+    align-self:flex-start;
 }
 
-.tag {
-    font-size: 12px;
-    margin-left: 8px;
-    padding: 2px 6px;
-    border-radius: 6px;
-    background: #444;
+/* INPUT */
+.input-area{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:#111;
 }
 
-.tag.new {
-    background: #7f00ff;
+input{
+    flex:1;
+    padding:14px;
+    border-radius:12px;
+    border:none;
+    background:#222;
+    color:#fff;
 }
 
+button{
+    padding:14px 22px;
+    border:none;
+    border-radius:12px;
+    background:#7f00ff;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* POPUP */
+.popup-background{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.popup-box{
+    background:#111;
+    padding:24px;
+    border-radius:14px;
+    width:85%;
+    max-width:360px;
+    text-align:center;
+    box-shadow:0 0 20px #7f00ff;
+}
+
+/* MENU */
+.menu-btn{
+    position:fixed;
+    top:16px;
+    right:16px;
+    font-size:26px;
+    cursor:pointer;
+    z-index:11000;
+    display:none;
+}
+
+.side-menu{
+    position:fixed;
+    top:0;
+    right:-260px;
+    width:240px;
+    height:100%;
+    background:#111;
+    transition:0.3s;
+    z-index:10500;
+}
+
+.side-menu.open{
+    right:0;
+}
+
+.menu-item{
+    padding:16px;
+    border-bottom:1px solid #222;
+    cursor:pointer;
+}
+
+.menu-item:hover{
+    background:#1b1b1b;
+}
+
+/* VERSION */
+.version-indicator{
+    text-align:center;
+    padding:6px;
+    font-size:14px;
+    background:#101010;
+}
 </style>
 </head>
 
 <body>
 
-<!-- TOP RIGHT MENU BUTTON -->
-<div id="menuBtn" class="menu-btn locked" onclick="toggleMenu()">☰</div>
+<!-- MENU BUTTON -->
+<div id="menuBtn" class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <!-- SIDE MENU -->
-<div class="side-menu" id="sideMenu">
-    <div class="menu-item" onclick="setVersion('0.1')">
-        Slay 0.1 <span class="tag">OG</span>
-    </div>
-
-    <div class="menu-item" onclick="setVersion('0.2')">
-        Slay 0.2 <span class="tag new">NEW</span>
-    </div>
-
-    <div class="menu-item" onclick="openPage('about')">
-        About Us
-    </div>
-
-    <div class="menu-item" onclick="openPage('future')">
-        Future Updates
-    </div>
+<div id="sideMenu" class="side-menu">
+    <div class="menu-item">Slay 0.1 (OG)</div>
+    <div class="menu-item">Slay 0.2 (NEW)</div>
+    <div class="menu-item">About Us</div>
+    <div class="menu-item">Future Updates</div>
 </div>
 
 <!-- POPUP -->
-<div class="popup-background" id="popup">
+<div id="popup" class="popup-background">
     <div class="popup-box">
-        <div class="popup-title">Developer's Note</div>
-
-        <div class="popup-text" id="popupMessage">
-            Maintenance going on for 0.2.
-            
-        </div>
-
-        <button class="popup-btn" id="continueBtn" onclick="closePopup()">
-    Continue
-        </button>
+        <h2>Developer’s Note</h2>
+        <p>Maintenance going on for 0.2</p>
+        <button onclick="closePopup()">Continue</button>
     </div>
 </div>
 
 <div class="header">Slay-0.1 AI</div>
-
 <div id="chat-box"></div>
 
 <div class="input-area">
-    <input type="text" id="userInput" placeholder="Ask Slay-0.1 something...">
+    <input id="userInput" placeholder="Ask Slay something...">
     <button onclick="sendMessage()">Send</button>
 </div>
 
 <div class="version-indicator">
-    Slay 0.2 → <span class="upgrade">0.3 coming soon</span>
+    Slay 0.2 → <span style="color:#e100ff">0.3 coming soon</span>
 </div>
 
 <script>
-
-function closePopup() {
-    const popup = document.getElementById("popup");
-    popup.remove(); // completely removes popup from page
-
-    const menuBtn = document.getElementById("menuBtn");
-    if (menuBtn) {
-        menuBtn.classList.remove("locked");
-    }
+function closePopup(){
+    document.getElementById("popup").remove();
+    document.getElementById("menuBtn").style.display="block";
 }
 
-
-function sendMessage() {
-    const input = document.getElementById("userInput");
-    const chat = document.getElementById("chat-box");
-
-    if (!input || !chat) return;
-
-    const message = input.value.trim();
-    if (message === "") return;
-
-    // show user bubble
-    const userBubble = document.createElement("div");
-    userBubble.className = "bubble user";
-    userBubble.textContent = message;
-    chat.appendChild(userBubble);
-    chat.scrollTop = chat.scrollHeight;
-
-    // clear input
-    input.value = "";
-
-    const lowerMsg = message.toLowerCase();
-
-    // send to backend
-    fetch("https://slay-backend-3.onrender.com/chat", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: message })
-    })
-    .then(res => {
-        if (!res.ok) {
-            // e.g. 429, 500, etc.
-            throw new Error("HTTP " + res.status);
-        }
-        return res.json();
-    })
-    .then(data => {
-        const aiBubble = document.createElement("div");
-        aiBubble.className = "bubble slay";
-        aiBubble.textContent = data && data.reply
-            ? data.reply
-            : "Slay glitch ho gaya 😭 (no reply from backend)";
-        chat.appendChild(aiBubble);
-        chat.scrollTop = chat.scrollHeight;
-    })
-    .catch(err => {
-        console.log("Backend / network error:", err);
-
-        const aiBubble = document.createElement("div");
-        aiBubble.className = "bubble slay";
-
-        // if user themselves typed stuff like "backend error"
-        if (
-            lowerMsg.includes("backend error") ||
-            lowerMsg.includes("server down") ||
-            lowerMsg.includes("backend failed") ||
-            lowerMsg.includes("429")
-        ) {
-            aiBubble.textContent = "Chill Boss 💀 that message was from you, not the server. Slay is fine, Groq sometimes acts moody.";
-        } else {
-            aiBubble.textContent = "Backend error 😭 — either Groq rate-limited or Render lagged. Wait a bit and try again.";
-        }
-
-        chat.appendChild(aiBubble);
-        chat.scrollTop = chat.scrollHeight;
-    });
-}
-
-   let currentVersion = "0.1";
-
-function toggleMenu() {
+function toggleMenu(){
     document.getElementById("sideMenu").classList.toggle("open");
 }
 
-function setVersion(version) {
-    currentVersion = version;
-    toggleMenu();
+function sendMessage(){
+    const input=document.getElementById("userInput");
+    const chat=document.getElementById("chat-box");
+    const msg=input.value.trim();
+    if(!msg) return;
 
-    if (version === "0.1") {
-        
-    }
+    const u=document.createElement("div");
+    u.className="bubble user";
+    u.textContent=msg;
+    chat.appendChild(u);
+    input.value="";
 
-    if (version === "0.2") {
-        
-    }
-}
-
-function openPage(page) {
-    toggleMenu();
-    
-} 
-</script>
-    
-<script>
-// CLOSE POPUP FUNCTION
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
-}
+    fetch("https://slay-backend-3.onrender.com/chat",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({message:msg})
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        const a=document.createElement("div");
+        a.className="bubble slay";
+        a.textContent=d.reply || "No reply 😭";
+        chat.appendChild(a);
+    })
+    .catch(()=>{
+        const a=document.createElement("div");
+        a.className="bubble slay";
+        a.textContent="Backend error 😭 try later";
+        chat.appendChild(a);
+    });
 
 // BIND BUTTON CLICK
 document.getElementById("continueBtn").addEventListener("click", closePopup);
